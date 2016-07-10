@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Runtime.CompilerServices;
+
+// ReSharper disable PossibleNullReferenceException
+// ReSharper disable PossibleMultipleEnumeration
 
 namespace ProjectAnalysis
 {
@@ -7,20 +12,23 @@ namespace ProjectAnalysis
     {
         private static void Main(string[] args)
         {
-            Console.WriteLine(args);
-            var s = int.Parse(Console.ReadLine());
-            int[][] adjMat = new int[s][];
+            var proj = new Project();
 
-            for (int i = 0; i < s; i++)
+            switch (args[0])
             {
-                var stage = Console.ReadLine().Split(' ').Select(int.Parse);
-                var adj = stage.First();
-                var edges = stage.Skip(1).ToArray();
-                adjMat[i] = new int[s];
-
-                for (int j = 0; j < adj; j++) adjMat[i][0] = 0;
+                case "new":
+                    proj.New();
+                    break;
+                case "load":
+                    proj.Load(args[1]);
+                    break;
+                default:
+                    Environment.Exit(0);
+                    break;
             }
 
+            var wg = new WDAG(adjMat);
+            Console.ReadKey();
         }
     }
 }
