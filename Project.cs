@@ -7,6 +7,7 @@ namespace ProjectAnalysis
     public class Project
     {
         public List<int> TopologicalOrder { get; } = new List<int>();
+        public List<int> CriticalActivities { get; } = new List<int>();
         public int[] EarlyStage { get; }
         public int[] LateStage { get; }
         public int[] EarlyActivity { get; }
@@ -55,13 +56,12 @@ namespace ProjectAnalysis
                 IsFeasible = false;
                 return;
             }
-
-
+            
             // Determine early/late stage times
             for (var i = 0; i < Size; i++) EarlyStage[i] = EST(i + 1);
             for (var i = Size - 1; i >= 0; i--) LateStage[i] = LST(i + 1);
 
-            // Determine early/late activity times
+            // Determine early/late activity times and critical activities
             var outgoing = new List<int>();
             var incoming = new List<int>();
             var costs = new List<int>();
@@ -79,6 +79,7 @@ namespace ProjectAnalysis
             {
                 EarlyActivity[k] = EarlyStage[outgoing[k] - 1];
                 LateActivity[k] = LST(incoming[k]) - costs[k];
+                if (EarlyActivity[k] == LateActivity[k]) CriticalActivities.Add(k + 1);
             }
         }
 
